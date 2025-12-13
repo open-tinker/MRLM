@@ -1,0 +1,238 @@
+// Protocol Buffer definitions for MRLM
+// This file defines the gRPC services and message types for distributed
+// communication between environments and trainers.
+
+syntax = "proto3";
+
+package mrlm;
+
+// A single message in a conversation
+message MessageProto {
+    // Role of the message sender (system, user, assistant, environment)
+    string role = 1;
+
+    // Content of the message
+    string content = 2;
+
+    // Optional metadata as key-value pairs
+    map<string, string> metadata = 3;
+}
+
+// Observation from an environment
+message ObservationProto {
+    // List of messages representing conversation state
+    repeated MessageProto messages = 1;
+
+    // Internal environment state (optional)
+    map<string, string> state = 2;
+
+    // Whether the episode has terminated
+    bool done = 3;
+
+    // Additional information
+    map<string, string> info = 4;
+}
+
+// Reward signal from environment
+message RewardProto {
+    // Total reward value
+    double value = 1;
+
+    // Decomposed reward components (e.g., "correctness": 0.8)
+    map<string, double> components = 2;
+
+    // Additional information about reward computation
+    map<string, string> info = 3;
+}
+
+// Request to reset an environment
+message ResetRequest {
+    // Unique identifier for the environment
+    string environment_id = 1;
+
+    // Optional configuration for the reset
+    map<string, string> config = 2;
+}
+
+// Response from environment reset
+message ResetResponse {
+    // Initial observation
+    ObservationProto observation = 1;
+
+    // Session ID for subsequent interactions
+    string session_id = 2;
+
+    // Status message
+    string status = 3;
+}
+
+// Request to step an environment
+message StepRequest {
+    // Session ID from reset
+    string session_id = 1;
+
+    // Action to take (as a message)
+    MessageProto action = 2;
+}
+
+// Response from environment step
+message StepResponse {
+    // Observation after taking action
+    ObservationProto observation = 1;
+
+    // Reward received
+    RewardProto reward = 2;
+
+    // Status message
+    string status = 3;
+}
+
+// Batch step request for efficiency
+message BatchStepRequest {
+    // List of step requests to execute
+    repeated StepRequest requests = 1;
+}
+
+// Batch step response
+message BatchStepResponse {
+    // List of step responses
+    repeated StepResponse responses = 1;
+}
+
+// Health check request
+message HealthCheckRequest {
+    // Optional service name to check
+    string service = 1;
+}
+
+// Health check response
+message HealthCheckResponse {
+    // Status: "healthy", "unhealthy", "unknown"
+    string status = 1;
+
+    // Additional information
+    map<string, string> info = 2;
+
+    // Timestamp
+    int64 timestamp = 3;
+}
+
+// Environment information
+message EnvironmentInfo {
+    // Environment ID
+    string environment_id = 1;
+
+    // Environment type (e.g., "code", "math", "llm")
+    string environment_type = 2;
+
+    // Current mode ("server" or "client")
+    string mode = 3;
+
+    // Additional metadata
+    map<string, string> metadata = 4;
+}
+
+// List environments request
+message ListEnvironmentsRequest {
+    // Optional filter by type
+    string environment_type = 1;
+}
+
+// List environments response
+message ListEnvironmentsResponse {
+    // List of available environments
+    repeated EnvironmentInfo environments = 1;
+}
+
+// Generation configuration
+message GenerationConfigProto {
+    int32 max_new_tokens = 1;
+    float temperature = 2;
+    float top_p = 3;
+    int32 top_k = 4;
+    bool do_sample = 5;
+    int32 num_beams = 6;
+    float repetition_penalty = 7;
+    float length_penalty = 8;
+}
+
+// Model generation request
+message GenerateRequest {
+    // Model/environment ID
+    string model_id = 1;
+
+    // Input messages
+    repeated MessageProto messages = 2;
+
+    // Generation configuration
+    GenerationConfigProto generation_config = 3;
+
+    // Whether to return log probabilities
+    bool return_log_probs = 4;
+
+    // Whether to return value estimate
+    bool return_value = 5;
+}
+
+// Model generation response
+message GenerateResponse {
+    // Generated response message
+    MessageProto response = 1;
+
+    // Log probabilities of generated tokens (if requested)
+    repeated double log_probs = 2;
+
+    // Value estimate from critic (if requested)
+    double value = 3;
+
+    // Generation metadata
+    map<string, string> metadata = 4;
+}
+
+// Batch generation request
+message BatchGenerateRequest {
+    repeated GenerateRequest requests = 1;
+}
+
+// Batch generation response
+message BatchGenerateResponse {
+    repeated GenerateResponse responses = 1;
+}
+
+// Environment Service
+// Provides interface for interacting with environments
+service EnvironmentService {
+    // Reset an environment to initial state
+    rpc Reset(ResetRequest) returns (ResetResponse);
+
+    // Take a single step in environment
+    rpc Step(StepRequest) returns (StepResponse);
+
+    // Take multiple steps in batch (for efficiency)
+    rpc BatchStep(BatchStepRequest) returns (BatchStepResponse);
+
+    // Streaming step for interactive/long-running episodes
+    rpc StreamStep(stream StepRequest) returns (stream StepResponse);
+
+    // List available environments
+    rpc ListEnvironments(ListEnvironmentsRequest) returns (ListEnvironmentsResponse);
+
+    // Health check
+    rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+// Model Service
+// Provides interface for LLM generation
+service ModelService {
+    // Generate response from model
+    rpc Generate(GenerateRequest) returns (GenerateResponse);
+
+    // Batch generation
+    rpc BatchGenerate(BatchGenerateRequest) returns (BatchGenerateResponse);
+
+    // Streaming generation
+    rpc StreamGenerate(stream GenerateRequest) returns (stream GenerateResponse);
+
+    // Health check
+    rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse);
+}

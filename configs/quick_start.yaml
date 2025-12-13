@@ -1,0 +1,38 @@
+# MRLM Quick Start Configuration
+# Minimal configuration for getting started quickly
+
+experiment_name: quick_start
+description: "Quick start example with minimal configuration"
+
+output_dir: ./output/quick_start
+
+# Minimal training config
+training:
+  algorithm: ppo
+  num_epochs: 10
+  batch_size: 8
+  learning_rate: 1.0e-5
+  num_rollouts_per_iteration: 16
+  eval_every: 5
+  save_every: 5
+
+# PPO defaults
+ppo:
+  clip_range: 0.2
+  gamma: 0.99
+  gae_lambda: 0.95
+
+# Use small model for quick testing
+model:
+  model_name_or_path: "gpt2"
+  max_new_tokens: 128
+  temperature: 0.8
+
+# Simple code environment
+eval_envs:
+  - env_type: code
+    mode: client
+    timeout: 3.0
+
+distributed:
+  enabled: false

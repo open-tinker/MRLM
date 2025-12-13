@@ -1,0 +1,82 @@
+# MRLM Configuration: Math Reasoning with PPO
+# Train LLM on mathematical problem solving using PPO
+
+experiment_name: math_reasoning_ppo
+description: "Train LLM on math word problems using PPO (GSM8K-style)"
+tags:
+  - math-reasoning
+  - ppo
+  - gsm8k
+
+output_dir: ./output/math_reasoning_ppo
+
+# Training
+training:
+  algorithm: ppo
+  num_epochs: 150
+  batch_size: 24
+  learning_rate: 3.0e-6
+  max_grad_norm: 1.0
+
+  lr_scheduler: linear
+  warmup_steps: 50
+
+  num_rollouts_per_iteration: 48
+  max_episode_length: 256
+
+  eval_every: 10
+  eval_episodes: 30
+  save_every: 15
+
+  checkpoint_dir: ./checkpoints/math_reasoning_ppo
+  save_total_limit: 5
+
+  log_every: 1
+  use_tensorboard: true
+
+  seed: 123
+  use_bf16: true
+
+# PPO config
+ppo:
+  clip_range: 0.15
+  gamma: 0.99
+  gae_lambda: 0.98
+  num_ppo_epochs: 5
+  value_loss_coef: 0.5
+  entropy_coef: 0.005
+  normalize_advantages: true
+
+# Model
+model:
+  model_name_or_path: "gpt2"  # Start with small model
+  use_flash_attention: false  # GPT-2 doesn't support it
+  gradient_checkpointing: false
+
+  # Generation config for math
+  max_new_tokens: 256
+  temperature: 0.7
+  top_p: 0.9
+  do_sample: true
+  repetition_penalty: 1.05
+
+  device: auto
+
+# Evaluation environments
+eval_envs:
+  - env_type: math
+    mode: client
+    dataset: null  # Demo problems
+    max_attempts: 2
+    reward_scale: 1.0
+
+  - env_type: math
+    mode: client
+    dataset: null
+    max_attempts: 2
+    reward_scale: 1.0
+
+# Distributed
+distributed:
+  enabled: false
+  num_gpus: 1

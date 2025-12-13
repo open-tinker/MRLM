@@ -1,0 +1,37 @@
+experiment_name: preference_dpo
+description: "Fine-tune LLM using DPO (Direct Preference Optimization) on preference data"
+
+training:
+  algorithm: dpo
+  num_epochs: 20
+  batch_size: 4
+  learning_rate: 5.0e-6
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+
+dpo:
+  beta: 0.1  # Temperature parameter (controls KL penalty strength)
+  label_smoothing: 0.0  # Label smoothing for robust training
+  reference_free: false  # Whether to use implicit reference (no ref model)
+
+model:
+  model_name_or_path: "Qwen/Qwen2.5-1.5B-Instruct"
+  device_map: "auto"
+  torch_dtype: "float16"
+  use_flash_attention: true
+
+# DPO doesn't need eval_envs - it uses preference dataset instead
+# You would specify dataset config here
+dataset:
+  type: "json"
+  path: "data/preferences.json"
+  # Or use HuggingFace dataset:
+  # type: "huggingface"
+  # name: "Anthropic/hh-rlhf"
+  # split: "train"
+
+output:
+  save_dir: "outputs/preference_dpo"
+  log_interval: 10
+  eval_interval: 5
+  save_interval: 10

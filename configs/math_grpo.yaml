@@ -1,0 +1,47 @@
+experiment_name: math_grpo
+description: "Train LLM on math reasoning using GRPO (Group Relative Policy Optimization)"
+
+training:
+  algorithm: grpo
+  num_epochs: 50
+  batch_size: 8
+  learning_rate: 1.0e-5
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  max_episode_length: 5
+  episodes_per_iteration: 32
+
+grpo:
+  clip_range: 0.2
+  gamma: 1.0  # No discounting for single-turn tasks
+  gae_lambda: 0.95
+  num_grpo_epochs: 4
+  value_loss_coef: 0.5
+  value_clip_range: 0.2
+  entropy_coef: 0.01
+  group_size: 4  # Generate 4 responses per prompt for comparison
+  target_kl: 0.01  # Early stopping if KL too high
+
+model:
+  model_name_or_path: "Qwen/Qwen2.5-1.5B-Instruct"
+  device_map: "auto"
+  torch_dtype: "float16"
+  use_flash_attention: true
+
+  generation:
+    max_new_tokens: 512
+    temperature: 0.7
+    do_sample: true
+    top_p: 0.9
+
+eval_envs:
+  - env_type: math
+    mode: client
+    difficulty_range: [1, 3]  # Easy to medium problems
+    max_turns: 5
+
+output:
+  save_dir: "outputs/math_grpo"
+  log_interval: 10
+  eval_interval: 5
+  save_interval: 10

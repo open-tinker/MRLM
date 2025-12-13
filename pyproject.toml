@@ -1,0 +1,195 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mrlm"
+version = "0.1.0"
+description = "Multi-Agent Reinforcement Learning Library for LLM Training"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "MRLM Contributors"}
+]
+keywords = ["reinforcement-learning", "llm", "multi-agent", "ppo", "grpo", "dpo", "distributed-training"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "torch>=2.0.0",
+    "transformers>=4.30.0",
+    "grpcio>=1.50.0",
+    "grpcio-tools>=1.50.0",
+    "protobuf>=4.21.0",
+    "pyyaml>=6.0",
+    "numpy>=1.24.0",
+    "tqdm>=4.65.0",
+    "accelerate>=0.20.0",
+    "datasets>=2.12.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "ruff>=0.0.280",
+    "mypy>=1.4.0",
+    "pre-commit>=3.3.0",
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=1.2.0",
+    "sphinx-autodoc-typehints>=1.23.0",
+    "myst-parser>=2.0.0",
+]
+docs = [
+    "sphinx>=7.0.0",
+    "sphinx-rtd-theme>=1.2.0",
+    "sphinx-autodoc-typehints>=1.23.0",
+    "myst-parser>=2.0.0",
+]
+distributed = [
+    "deepspeed>=0.10.0",
+]
+tracking = [
+    "wandb>=0.15.0",
+    "tensorboard>=2.13.0",
+]
+all = [
+    "mrlm[dev,docs,distributed,tracking]",
+]
+
+[project.urls]
+Homepage = "https://github.com/youjiaxuan/MRLM"
+Documentation = "https://mrlm.readthedocs.io"
+Repository = "https://github.com/youjiaxuan/MRLM"
+"Bug Tracker" = "https://github.com/youjiaxuan/MRLM/issues"
+
+[project.scripts]
+mrlm = "mrlm.cli.main:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["mrlm*"]
+
+[tool.setuptools.package-data]
+mrlm = ["py.typed", "protocols/*.proto"]
+
+[tool.black]
+line-length = 100
+target-version = ['py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  | src/mrlm/protocols/*_pb2*.py
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex
+]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "src/mrlm/protocols/*_pb2*.py",
+]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+exclude = [
+    "build/",
+    "dist/",
+    "src/mrlm/protocols/.*_pb2.*\\.py$",
+]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --cov=mrlm --cov-report=term-missing"
+testpaths = [
+    "tests",
+]
+pythonpath = [
+    "src",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "e2e: marks tests as end-to-end tests",
+    "requires_gpu: marks tests that require GPU",
+]
+
+[tool.coverage.run]
+source = ["src/mrlm"]
+omit = [
+    "*/tests/*",
+    "*/protocols/*_pb2*.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]

@@ -1,0 +1,150 @@
+# MRLM Configuration: Code Generation with PPO
+# This configuration trains an LLM on code generation using PPO
+
+experiment_name: code_generation_ppo
+description: "Train LLM to write Python code using PPO on HumanEval-style problems"
+tags:
+  - code-generation
+  - ppo
+  - programming
+
+# Output directory
+output_dir: ./output/code_generation_ppo
+
+# Training configuration
+training:
+  algorithm: ppo
+
+  # Training schedule
+  num_epochs: 100
+  batch_size: 32
+  mini_batch_size: 8
+  learning_rate: 5.0e-6
+  max_grad_norm: 0.5
+
+  # Optimizer
+  optimizer: adamw
+  weight_decay: 0.01
+
+  # Learning rate schedule
+  lr_scheduler: cosine
+  warmup_steps: 100
+
+  # Rollout collection
+  num_rollouts_per_iteration: 64
+  max_episode_length: 128
+
+  # Evaluation
+  eval_every: 5
+  eval_episodes: 20
+
+  # Checkpointing
+  save_every: 10
+  checkpoint_dir: ./checkpoints/code_generation_ppo
+  save_total_limit: 3  # Keep only 3 most recent checkpoints
+
+  # Logging
+  log_every: 1
+  log_dir: ./logs/code_generation_ppo
+  use_tensorboard: true
+
+  # Experiment tracking (optional)
+  # wandb_project: mrlm-code-generation
+  # wandb_entity: your-username
+
+  # Reproducibility
+  seed: 42
+
+  # Mixed precision (recommended for GPU)
+  use_bf16: true  # Use bf16 if available, else fp16
+
+  # Gradient accumulation
+  gradient_accumulation_steps: 1
+
+# PPO-specific hyperparameters
+ppo:
+  clip_range: 0.2
+  clip_range_vf: null  # No value function clipping
+  gamma: 0.99
+  gae_lambda: 0.95
+  num_ppo_epochs: 4
+  value_loss_coef: 0.5
+  entropy_coef: 0.01
+  target_kl: 0.02  # Early stopping if KL divergence too large
+  normalize_advantages: true
+
+# Model configuration
+model:
+  # Model to load
+  model_name_or_path: "Qwen/Qwen2.5-1.5B-Instruct"
+  tokenizer_name_or_path: null  # Use same as model
+  trust_remote_code: false
+
+  # Model optimizations
+  use_flash_attention: true
+  gradient_checkpointing: true
+
+  # Quantization (for memory efficiency)
+  load_in_8bit: false
+  load_in_4bit: false
+
+  # LoRA (Parameter-Efficient Fine-Tuning)
+  use_lora: false
+  lora_r: 8
+  lora_alpha: 16
+  lora_dropout: 0.05
+  lora_target_modules:
+    - q_proj
+    - v_proj
+
+  # Generation configuration
+  max_new_tokens: 512
+  temperature: 0.8
+  top_p: 0.95
+  top_k: 50
+  do_sample: true
+  repetition_penalty: 1.1
+
+  # Device
+  device: auto  # Auto-detect CUDA/CPU
+  device_map: auto  # Auto-distribute across GPUs
+
+# Policy environment (being trained)
+policy_env:
+  env_type: llm
+  mode: server  # Training mode
+
+# Evaluation environments
+eval_envs:
+  # Code execution environment
+  - env_type: code
+    mode: client
+    dataset: null  # Use demo problems
+    timeout: 5.0
+    max_attempts: 2
+    reward_scale: 1.0
+
+  # Second code environment for more diverse evaluation
+  - env_type: code
+    mode: client
+    dataset: null
+    timeout: 5.0
+    max_attempts: 2
+    reward_scale: 1.0
+
+# Distributed training (optional)
+distributed:
+  enabled: false
+  backend: nccl
+  num_gpus: 1
+  strategy: ddp
+
+  # Multi-node (if using multiple machines)
+  # num_nodes: 2
+  # node_rank: 0
+  # master_addr: "10.0.0.1"
+  # master_port: 29500
+
+  # FSDP config (for large models)
+  # fsdp_sharding_strategy: full_shard
+  # fsdp_cpu_offload: false

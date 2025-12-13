@@ -1,0 +1,132 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# PyCharm
+.idea/
+
+# VSCode
+.vscode/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.env.local
+.venv
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+.cache
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+
+# Documentation
+docs/_build/
+docs/_static/
+docs/_templates/
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Generated files
+src/mrlm/protocols/*_pb2.py
+src/mrlm/protocols/*_pb2.pyi
+src/mrlm/protocols/*_pb2_grpc.py
+
+# Model outputs
+outputs/
+checkpoints/
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Data
+data/
+datasets/
+*.json
+*.jsonl
+*.csv
+*.parquet
+
+# Logs
+logs/
+*.log
+wandb/
+tensorboard/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# IDEs
+*.sublime-project
+*.sublime-workspace
+
+# Pre-commit
+.pre-commit-config.yaml
+
+# Profiling
+*.prof
+*.lprof
+
+# Backup files
+*.bak
+*~
+
+# Other
+.cache/

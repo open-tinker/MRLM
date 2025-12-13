@@ -1,0 +1,58 @@
+experiment_name: sft_world_model
+description: "SFT training for world model learning - predict future states from trajectories"
+
+training:
+  algorithm: sft
+  num_epochs: 50
+  batch_size: 8
+  learning_rate: 5.0e-6
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+  max_episode_length: 5
+  episodes_per_iteration: 16  # Collect 16 trajectories per iteration
+
+sft:
+  # Training mode: behavioral_cloning, world_model, or combined
+  mode: combined
+
+  # Loss weights (for combined mode)
+  bc_weight: 0.5  # Behavioral cloning: predict actions
+  world_model_weight: 0.5  # World model: predict next states
+
+  # Trajectory filtering
+  filter_low_reward: true  # Only keep successful trajectories
+  min_reward_threshold: 0.5  # Minimum total reward to keep trajectory
+
+  # Collection frequency
+  collect_every: 5  # Collect new trajectories every N iterations
+  max_trajectories: 1000  # Maximum trajectories in dataset
+
+model:
+  model_name_or_path: "Qwen/Qwen2.5-1.5B-Instruct"
+  device_map: "auto"
+  torch_dtype: "float16"
+  use_flash_attention: true
+
+  generation:
+    max_new_tokens: 256
+    temperature: 0.7
+    do_sample: true
+    top_p: 0.9
+
+eval_envs:
+  - env_type: math
+    mode: client
+    difficulty_range: [1, 3]  # Easy to medium problems
+    max_turns: 5
+
+# Distributed training (optional)
+distributed:
+  enabled: false
+  strategy: "ddp"  # or "fsdp" for large models
+  backend: "nccl"
+
+output:
+  save_dir: "outputs/sft_world_model"
+  log_interval: 10
+  eval_interval: 5
+  save_interval: 10

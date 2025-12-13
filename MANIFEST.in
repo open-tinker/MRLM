@@ -1,0 +1,36 @@
+# Include documentation
+include README.md
+include LICENSE
+include CHANGELOG.md
+include CONTRIBUTING.md
+include ARCHITECTURE.md
+include INSTALL.md
+
+# Include configuration files
+include pyproject.toml
+include pytest.ini
+
+# Include protocol buffer files
+recursive-include src/mrlm/protocols *.proto
+
+# Include type stubs
+include src/mrlm/py.typed
+
+# Include example configs
+recursive-include configs *.yaml
+
+# Exclude unnecessary files
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store
+global-exclude *.swp
+global-exclude .gitignore
+
+# Exclude generated protobuf files
+global-exclude *_pb2.py
+global-exclude *_pb2.pyi
+global-exclude *_pb2_grpc.py
+
+# Exclude test files
+prune tests
+prune docs/_build
