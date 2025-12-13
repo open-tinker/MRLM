@@ -1,0 +1,126 @@
+================================================================================
+                    MRLM GPU Selection Quick Reference
+================================================================================
+
+METHOD 1: Environment Variable (Simplest)
+------------------------------------------
+# Use GPUs 0 and 2
+export CUDA_VISIBLE_DEVICES=0,2
+python train.py
+
+# Use GPU 1 only
+export CUDA_VISIBLE_DEVICES=1
+python train.py
+
+# Use CPU only
+export CUDA_VISIBLE_DEVICES=""
+python train.py
+
+
+METHOD 2: YAML Configuration (Recommended)
+-------------------------------------------
+# config.yaml
+distributed:
+  num_gpus: 4              # Use 4 GPUs
+  gpu_ids: [0, 1, 2, 3]    # Specific GPU IDs
+  strategy: "ddp"          # or "fsdp" for large models
+
+# Run
+mrlm train --config config.yaml
+
+
+METHOD 3: Python API (Programmatic)
+------------------------------------
+from mrlm.distributed import setup_gpu_environment
+
+# Use 2 GPUs
+device = setup_gpu_environment(num_gpus=2)
+
+# Use specific GPUs
+device = setup_gpu_environment(gpu_ids=[0, 2])
+
+# Check available GPUs
+from mrlm.distributed import get_available_gpus, print_gpu_info
+print(get_available_gpus())  # [0, 1, 2, 3, ...]
+print_gpu_info()             # Detailed info
+
+
+COMMON SCENARIOS
+----------------
+
+Single GPU Training:
+  export CUDA_VISIBLE_DEVICES=0
+  python train.py
+
+Multi-GPU DDP (4 GPUs):
+  export CUDA_VISIBLE_DEVICES=0,1,2,3
+  torchrun --nproc_per_node=4 train.py
+
+Large Model FSDP (8 GPUs):
+  export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
+  torchrun --nproc_per_node=8 train.py --strategy fsdp
+
+Specific GPUs (e.g., 1, 3, 5, 7):
+  export CUDA_VISIBLE_DEVICES=1,3,5,7
+  torchrun --nproc_per_node=4 train.py
+
+
+CHECKING GPU STATUS
+-------------------
+# In Python
+from mrlm.distributed import print_gpu_info, get_gpu_memory_usage
+
+print_gpu_info()  # Shows all GPUs with memory and utilization
+
+# Check specific GPU
+allocated, total, util = get_gpu_memory_usage(gpu_id=0)
+print(f"GPU 0: {allocated}/{total} MB ({util}% used)")
+
+
+AUTO-SELECTION
+--------------
+from mrlm.distributed import auto_select_gpus_for_model
+
+# For 7B model (~14GB)
+gpus = auto_select_gpus_for_model(model_size_gb=14)
+
+# For 70B model (~140GB)
+gpus = auto_select_gpus_for_model(model_size_gb=140)
+
+
+DISTRIBUTED TRAINING
+--------------------
+# Single node, 4 GPUs
+torchrun --nproc_per_node=4 train.py
+
+# Multi-node (2 nodes, 8 GPUs each)
+# Node 0:
+torchrun --nproc_per_node=8 --nnodes=2 --node_rank=0 \
+  --master_addr=192.168.1.1 --master_port=29500 train.py
+
+# Node 1:
+torchrun --nproc_per_node=8 --nnodes=2 --node_rank=1 \
+  --master_addr=192.168.1.1 --master_port=29500 train.py
+
+
+TROUBLESHOOTING
+---------------
+"CUDA out of memory":
+  - Reduce batch size
+  - Use FSDP instead of DDP
+  - Enable CPU offload: fsdp_cpu_offload: true
+  - Use mixed precision: torch_dtype: "bfloat16"
+
+"Invalid device ordinal":
+  - Check available GPUs: get_available_gpus()
+  - Don't request GPU 4 if you only have GPUs 0-3
+
+GPUs not being used:
+  - Check CUDA_VISIBLE_DEVICES is set correctly
+  - Verify model.to(device) was called
+  - Check torch.cuda.is_available()
+
+
+For detailed documentation, see: docs/GPU_SELECTION.md
+For examples, see: examples/gpu_selection_example.py
+================================================================================
