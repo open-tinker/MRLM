@@ -18,10 +18,12 @@ from mrlm.core.types import (
 )
 
 # Core classes
-from mrlm.core.base import BaseEnvironment, SimulatedEnvironment, BaseTrainer
+from mrlm.core.base import BaseEnvironment
+from mrlm.core.simulated_environment import SimulatedEnvironment
 from mrlm.core.llm_environment import LLMEnvironment
 
 # Algorithms
+from mrlm.algorithms.base_trainer import BaseTrainer
 from mrlm.algorithms.ppo import PPOTrainer
 from mrlm.algorithms.grpo import GRPOTrainer
 from mrlm.algorithms.dpo import DPOTrainer
