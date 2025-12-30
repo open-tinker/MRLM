@@ -8,7 +8,7 @@ This guide covers installation and setup for the MRLM library.
 
 ```bash
 # Clone the repository
-git clone https://github.com/youjiaxuan/MRLM.git
+git clone https://github.com/open-tinker/MRLM.git
 cd MRLM
 
 # Create virtual environment
@@ -200,4 +200,4 @@ print(obs.messages[-1].content)
 - Read the [Quick Start Guide](examples/quickstart/README.md)
 - Browse [Examples](examples/)
 - Check [Documentation](https://mrlm.readthedocs.io)
-- Join [Discussions](https://github.com/youjiaxuan/MRLM/discussions)
+- Join [Discussions](https://github.com/open-tinker/MRLM/discussions)

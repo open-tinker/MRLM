@@ -125,4 +125,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-**Note**: This is the initial release of MRLM. Please report any issues on [GitHub Issues](https://github.com/youjiaxuan/MRLM/issues).
+**Note**: This is the initial release of MRLM. Please report any issues on [GitHub Issues](https://github.com/open-tinker/MRLM/issues).

@@ -160,7 +160,7 @@ You'll be prompted for your PyPI credentials or API token.
 
 ### Step 10: Create GitHub Release
 
-1. Go to https://github.com/youjiaxuan/MRLM/releases/new
+1. Go to https://github.com/open-tinker/MRLM/releases/new
 2. Select the tag you created (v0.2.0)
 3. Title: "MRLM v0.2.0"
 4. Description: Copy relevant section from CHANGELOG.md

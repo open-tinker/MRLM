@@ -120,7 +120,7 @@ Check the output for warnings or errors.
 
 Once published, the documentation will be available at:
 - **Read the Docs**: https://mrlm.readthedocs.io
-- **GitHub Pages**: https://youjiaxuan.github.io/MRLM
+- **GitHub Pages**: https://open-tinker.github.io/MRLM
 
 ## Related Documentation Files
 

@@ -38,7 +38,7 @@ Installation
    pip install mrlm
 
    # From source
-   git clone https://github.com/youjiaxuan/MRLM.git
+   git clone https://github.com/open-tinker/MRLM.git
    cd MRLM
    pip install -e .
 

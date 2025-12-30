@@ -70,10 +70,10 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/youjiaxuan/MRLM"
+Homepage = "https://github.com/open-tinker/MRLM"
 Documentation = "https://mrlm.readthedocs.io"
-Repository = "https://github.com/youjiaxuan/MRLM"
-"Bug Tracker" = "https://github.com/youjiaxuan/MRLM/issues"
+Repository = "https://github.com/open-tinker/MRLM"
+"Bug Tracker" = "https://github.com/open-tinker/MRLM/issues"
 
 [project.scripts]
 mrlm = "mrlm.cli.main:main"

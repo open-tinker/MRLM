@@ -60,7 +60,7 @@ git clone https://github.com/YOUR_USERNAME/MRLM.git
 cd MRLM
 
 # Add upstream remote
-git remote add upstream https://github.com/youjiaxuan/MRLM.git
+git remote add upstream https://github.com/open-tinker/MRLM.git
 ```
 
 ### 2. Create Development Environment

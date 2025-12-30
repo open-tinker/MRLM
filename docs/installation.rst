@@ -10,7 +10,7 @@ The recommended way to install MRLM is from source:
 
 .. code-block:: bash
 
-   git clone https://github.com/youjiaxuan/MRLM.git
+   git clone https://github.com/open-tinker/MRLM.git
    cd MRLM
    pip install -e .
 
@@ -32,7 +32,7 @@ For development, install with additional dependencies:
 
 .. code-block:: bash
 
-   git clone https://github.com/youjiaxuan/MRLM.git
+   git clone https://github.com/open-tinker/MRLM.git
    cd MRLM
    pip install -e ".[dev]"
    pre-commit install

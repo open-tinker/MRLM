@@ -25,7 +25,7 @@
 pip install mrlm
 
 # From source
-git clone https://github.com/youjiaxuan/MRLM.git
+git clone https://github.com/open-tinker/MRLM.git
 cd MRLM
 pip install -e .
 ```
@@ -381,7 +381,7 @@ Comprehensive documentation available:
 ### Setup Development Environment
 
 ```bash
-git clone https://github.com/youjiaxuan/MRLM.git
+git clone https://github.com/open-tinker/MRLM.git
 cd MRLM
 pip install -e ".[dev]"
 pre-commit install
@@ -476,7 +476,7 @@ If you use MRLM in your research, please cite:
   title={MRLM: Multi-Agent Reinforcement Learning for LLMs},
   author={MRLM Contributors},
   year={2024},
-  url={https://github.com/youjiaxuan/MRLM},
+  url={https://github.com/open-tinker/MRLM},
   version={0.1.0}
 }
 ```
@@ -495,8 +495,8 @@ MRLM is inspired by and builds upon ideas from:
 
 ## 💬 Support
 
-- **Issues**: [GitHub Issues](https://github.com/youjiaxuan/MRLM/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/youjiaxuan/MRLM/discussions)
+- **Issues**: [GitHub Issues](https://github.com/open-tinker/MRLM/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/open-tinker/MRLM/discussions)
 - **Email**: mrlm-dev@example.com
 
 ## 🗺️ Roadmap
